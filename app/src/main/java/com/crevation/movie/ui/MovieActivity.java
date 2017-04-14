@@ -1,6 +1,7 @@
 package com.crevation.movie.ui;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -34,6 +35,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
     SwipeRefreshLayout mMovieSwipe;
     boolean SORT_BY_POPULAR = true;
     MovieService mMovieService;
+    GridLayoutManager mGridLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +71,14 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
         mMovieRecycler = (RecyclerView) findViewById(R.id.movieRecycler);
         mMovies = new ArrayList<>();
         mMovieAdapter = new MovieAdapter(mMovies, this, this);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        mMovieRecycler.setLayoutManager(gridLayoutManager);
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            mGridLayoutManager = new GridLayoutManager(this, 4);
+        }else{
+            mGridLayoutManager = new GridLayoutManager(this, 2);
+        }
+
+        mMovieRecycler.setLayoutManager(mGridLayoutManager);
         mMovieRecycler.setAdapter(mMovieAdapter);
         mMovieSwipe.setOnRefreshListener(this);
         mMovieService = MovieApp.getMovieService();

@@ -10,6 +10,6 @@
     <ImageView
         android:id="@+id/pic"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="@dimen/image_height"
         android:scaleType="centerCrop" />
 </LinearLayout>
