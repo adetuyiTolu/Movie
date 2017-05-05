@@ -1,5 +1,8 @@
 package com.crevation.movie.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -8,7 +11,7 @@ import java.io.Serializable;
  * Created by Slimfit on 4/13/2017.
  */
 
-public class Movie implements Serializable {
+public class Movie implements Parcelable {
 
     @SerializedName("release_date")
     private String releaseDate;
@@ -26,6 +29,19 @@ public class Movie implements Serializable {
     private String ratings;
 
     private String synopsis;
+
+    private String id;
+
+    public Movie(Parcel parcel) {
+        this.releaseDate = parcel.readString();
+        this.title = parcel.readString();
+        this.overview = parcel.readString();
+        this.posterUrl = parcel.readString();
+        this.ratings = parcel.readString();
+        this.synopsis = parcel.readString();
+        this.id = parcel.readString();
+
+    }
 
     public Movie(String posterUrl) {
         this.posterUrl = posterUrl;
@@ -78,4 +94,43 @@ public class Movie implements Serializable {
     public String getTitle() {
         return title;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel parcel) {
+            return new Movie(parcel);
+        }
+
+        @Override
+        public Movie[] newArray(int i) {
+            return new Movie[i];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(releaseDate);
+        parcel.writeString(title);
+        parcel.writeString(overview);
+        parcel.writeString(posterUrl);
+        parcel.writeString(ratings);
+        parcel.writeString(synopsis);
+        parcel.writeString(id);
+
+    }
+
+
 }

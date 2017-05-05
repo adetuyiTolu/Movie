@@ -24,24 +24,35 @@ import com.crevation.movie.data.rest.MovieService;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+
+    @InjectView(R.id.movieRecycler)
     RecyclerView mMovieRecycler;
+
+    @InjectView(R.id.movieSwipe)
+    SwipeRefreshLayout mMovieSwipe;
+
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
+
+    GridLayoutManager mGridLayoutManager;
     MovieAdapter mMovieAdapter;
     ArrayList<Movie> mMovies;
-    SwipeRefreshLayout mMovieSwipe;
     boolean SORT_BY_POPULAR = true;
     MovieService mMovieService;
-    GridLayoutManager mGridLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.inject(this);
         setSupportActionBar(toolbar);
         init();
         getSavedBundles(savedInstanceState);
@@ -55,7 +66,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
      */
     void getSavedBundles(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            mMovies = (ArrayList<Movie>) savedInstanceState.getSerializable(AppResource.ALL_MOVIES);
+            mMovies = savedInstanceState.getParcelableArrayList(AppResource.ALL_MOVIES);
             SORT_BY_POPULAR = savedInstanceState.getBoolean(AppResource.SORT_STATE);
             refreshMovieList();
         } else {
@@ -67,14 +78,12 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
      * Initialize views and adapters for RecyclerView
      */
     void init() {
-        mMovieSwipe = (SwipeRefreshLayout) findViewById(R.id.movieSwipe);
-        mMovieRecycler = (RecyclerView) findViewById(R.id.movieRecycler);
         mMovies = new ArrayList<>();
         mMovieAdapter = new MovieAdapter(mMovies, this, this);
 
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             mGridLayoutManager = new GridLayoutManager(this, 4);
-        }else{
+        } else {
             mGridLayoutManager = new GridLayoutManager(this, 2);
         }
 
@@ -118,7 +127,11 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 mMovies = new ArrayList<Movie>();
-                mMovies.addAll(response.body().getMovies());
+                try {
+                    mMovies.addAll(response.body().getMovies());
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 refreshMovieList();
                 //stop loading refresh loader
                 mMovieSwipe.setRefreshing(false);
@@ -167,7 +180,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
 
         super.onSaveInstanceState(outState, outPersistentState);
-        outState.putSerializable(AppResource.ALL_MOVIES, mMovies);
+        outState.putParcelableArrayList(AppResource.ALL_MOVIES, mMovies);
         outState.putBoolean(AppResource.SORT_STATE, SORT_BY_POPULAR);
     }
 
