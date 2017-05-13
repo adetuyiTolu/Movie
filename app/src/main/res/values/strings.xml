@@ -3,7 +3,10 @@
     <string name="action_settings">Settings</string>
     <string name="action_top_rated">Top Rated</string>
     <string name="action_popular">Popular</string>
-    <string name="title_activity_movie_details">MovieDetailsActivity</string>
+    <string name="action_favorite">Favorite</string>
+    <string name="text_review">Reviews</string>
+    <string name="text_trailer">Trailers</string>
+    <string name="title_activity_movie_details">Movie Details</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

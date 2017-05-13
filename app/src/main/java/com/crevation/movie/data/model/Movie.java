@@ -32,6 +32,8 @@ public class Movie implements Parcelable {
 
     private String id;
 
+    private boolean favorite;
+
     public Movie(Parcel parcel) {
         this.releaseDate = parcel.readString();
         this.title = parcel.readString();
@@ -93,6 +95,14 @@ public class Movie implements Parcelable {
 
     public String getTitle() {
         return title;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
     }
 
     public void setId(String id) {

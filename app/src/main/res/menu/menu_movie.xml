@@ -2,19 +2,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.crevation.movie.ui.MovieActivity">
-    <group android:checkableBehavior="single"
+    <group
         android:id="@+id/sort"
+        android:checkableBehavior="single"
         android:visible="true">
-    <item
-        android:id="@+id/action_popular"
-        android:checked="true"
-        android:orderInCategory="100"
-        android:title="@string/action_popular"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_top_rated"
-        android:orderInCategory="100"
-        android:title="@string/action_top_rated"
-        app:showAsAction="never" />
+        <item
+            android:id="@+id/action_popular"
+            android:checked="true"
+            android:orderInCategory="100"
+            android:title="@string/action_popular"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_top_rated"
+            android:orderInCategory="100"
+            android:title="@string/action_top_rated"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_favorite"
+            android:orderInCategory="100"
+            android:title="@string/action_favorite"
+            app:showAsAction="never" />
     </group>
 </menu>

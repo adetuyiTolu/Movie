@@ -2,6 +2,7 @@ package com.crevation.movie.ui;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,6 +19,7 @@ import com.crevation.movie.AppResource;
 import com.crevation.movie.MovieApp;
 import com.crevation.movie.R;
 import com.crevation.movie.adapter.MovieAdapter;
+import com.crevation.movie.data.local.MovieDb;
 import com.crevation.movie.data.model.Movie;
 import com.crevation.movie.data.rest.MovieResponse;
 import com.crevation.movie.data.rest.MovieService;
@@ -29,6 +31,10 @@ import butterknife.InjectView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.crevation.movie.AppResource.BY_FAVORITE;
+import static com.crevation.movie.AppResource.BY_POPULAR;
+import static com.crevation.movie.AppResource.BY_TOP_RATED;
 
 public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -44,8 +50,9 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
     GridLayoutManager mGridLayoutManager;
     MovieAdapter mMovieAdapter;
     ArrayList<Movie> mMovies;
-    boolean SORT_BY_POPULAR = true;
+    int SORT_BY = BY_POPULAR;
     MovieService mMovieService;
+    MovieDb mMovieDb;
 
 
     @Override
@@ -67,7 +74,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
     void getSavedBundles(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             mMovies = savedInstanceState.getParcelableArrayList(AppResource.ALL_MOVIES);
-            SORT_BY_POPULAR = savedInstanceState.getBoolean(AppResource.SORT_STATE);
+            SORT_BY = savedInstanceState.getInt(AppResource.SORT_STATE);
             refreshMovieList();
         } else {
             fetchMovies();
@@ -91,6 +98,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
         mMovieRecycler.setAdapter(mMovieAdapter);
         mMovieSwipe.setOnRefreshListener(this);
         mMovieService = MovieApp.getMovieService();
+        mMovieDb = MovieDb.getInstance(getApplicationContext());
     }
 
     @Override
@@ -115,10 +123,13 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
             mMovieSwipe.setRefreshing(false);
             return;
         }
-        Call<MovieResponse> call = mMovieService.getTopRatedMovies();
+        Call<MovieResponse> call = mMovieService.getPopularMovies();
         //change api to call based on user selection via menu
-        if (SORT_BY_POPULAR) {
-            call = mMovieService.getPopularMovies();
+        if (SORT_BY == 2) {
+            call = mMovieService.getTopRatedMovies();
+        } else if (SORT_BY == 3) {
+            sortByFavourite();
+            return;
         }
         //start loading refresh loader
         mMovieSwipe.setRefreshing(true);
@@ -129,7 +140,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
                 mMovies = new ArrayList<Movie>();
                 try {
                     mMovies.addAll(response.body().getMovies());
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 refreshMovieList();
@@ -148,6 +159,34 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
         });
     }
 
+    //fetch from favorite
+
+    private void sortByFavourite() {
+
+        Cursor cursor = mMovieDb.getAllMovies();
+
+        if (cursor.getCount() > 0) {
+
+            mMovies.clear();
+            while (cursor.moveToNext()) {
+                Movie movie = new Movie(cursor.getString(3));
+                movie.setId(cursor.getString(1));
+                movie.setTitle(cursor.getString(2));
+                movie.setPosterUrl(cursor.getString(3));
+                movie.setRatings(cursor.getString(4));
+                movie.setOverview(cursor.getString(5));
+                movie.setSynopsis(cursor.getString(5));
+                movie.setReleaseDate(cursor.getString(6));
+                mMovies.add(movie);
+
+            }
+            refreshMovieList();
+        } else {
+            Toast.makeText(this, "You have no favourite movie.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     void refreshMovieList() {
         mMovieAdapter = new MovieAdapter(mMovies, this, this);
         mMovieRecycler.setAdapter(mMovieAdapter);
@@ -165,11 +204,14 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
         int id = item.getItemId();
         item.setChecked(true);
         if (id == R.id.action_top_rated) {
-            SORT_BY_POPULAR = false;
+            SORT_BY = BY_TOP_RATED;
             fetchMovies();
             return true;
         } else if (id == R.id.action_popular) {
-            SORT_BY_POPULAR = true;
+            SORT_BY = BY_POPULAR;
+            fetchMovies();
+        } else if (id == R.id.action_favorite) {
+            SORT_BY = BY_FAVORITE;
             fetchMovies();
         }
 
@@ -181,7 +223,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.OnI
 
         super.onSaveInstanceState(outState, outPersistentState);
         outState.putParcelableArrayList(AppResource.ALL_MOVIES, mMovies);
-        outState.putBoolean(AppResource.SORT_STATE, SORT_BY_POPULAR);
+        outState.putInt(AppResource.SORT_STATE, SORT_BY);
     }
 
 }

@@ -12,15 +12,14 @@ import retrofit2.http.Path;
 
 public interface MovieService {
 
-    //@GET("movie/popular?api_key=[API_KEY]")
-    @GET("movie/popular?api_key=e3a977c2c0a0af61873aa9b7474ac364")
+    @GET("movie/popular?api_key=[API_KEY]")
     Call<MovieResponse> getPopularMovies();
 
-    @GET("movie/top_rated?api_key=e3a977c2c0a0af61873aa9b7474ac364")
+    @GET("movie/top_rated?api_key=[API_KEY]")
     Call<MovieResponse> getTopRatedMovies();
 
-    @GET("movie/{id}/videos?api_key=e3a977c2c0a0af61873aa9b7474ac364")
-    Call<MovieResponse> getMovieTrailers(@Path("id") String id);
+    @GET("movie/{id}/videos?api_key=[API_KEY]")
+    Call<TrailerResponse> getMovieTrailers(@Path("id") String id);
 
     @GET("movie/{id}/reviews?api_key=e3a977c2c0a0af61873aa9b7474ac364")
     Call<ReviewResponse> getMovieReviews(@Path("id") String id);
