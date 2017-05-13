@@ -102,13 +102,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         } else {
             mMovie = getIntent().getParcelableExtra(AppResource.BUNDLE_DETAILS);
         }
-        if (mMovieDb.isLocal(mMovie.getId())) {
-            mFavorite.setImageResource(R.drawable.ic_favorite_black);
-            mMovie.setFavorite(true);
-        } else {
-            mFavorite.setImageResource(R.drawable.ic_favorite_white);
-            mMovie.setFavorite(false);
-        }
+
     }
 
     void init() {
@@ -143,6 +137,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
         mtrailersRecycler.setNestedScrollingEnabled(true);
 
         //favorite
+        if (mMovieDb.isLocal(mMovie.getId())) {
+            mFavorite.setImageResource(R.drawable.ic_favorite_black);
+            mMovie.setFavorite(true);
+        } else {
+            mFavorite.setImageResource(R.drawable.ic_favorite_white);
+            mMovie.setFavorite(false);
+        }
         mFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
