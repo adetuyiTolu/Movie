@@ -26,7 +26,7 @@ public class MovieDb {
 
     private MovieDb(Context context) {
 
-        MovieDbHelper dbHelper = new MovieDbHelper(context);
+       dbHelper = new MovieDbHelper(context);
 
     }
 
