@@ -12,7 +12,7 @@ import retrofit2.http.Path;
 
 public interface MovieService {
 
-    //@GET("movie/popular?api_key=[API_KEY]")
+    //@GET("movie/popular?api_key=[API_KEY]")z
     @GET("movie/popular?api_key=[API_KEY]")
     Call<MovieResponse> getPopularMovies();
 
