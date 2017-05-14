@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/text_margin"
-    android:paddingTop="@dimen/view_margin">
+    android:layout_margin="@dimen/fab_margin">
 
     <TextView
         android:id="@+id/review_content"

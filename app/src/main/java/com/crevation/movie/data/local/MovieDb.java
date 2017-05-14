@@ -66,7 +66,7 @@ public class MovieDb {
 
     public boolean deleteMovie(String id) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete(TABLE_NAME, "id=?", new String[]{id});
+        db.delete(TABLE_NAME, "movie_id=?", new String[]{id});
         return true;
     }
 

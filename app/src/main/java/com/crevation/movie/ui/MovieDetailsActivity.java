@@ -172,10 +172,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
             @Override
             public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
                 mReviews = response.body().getReviews();
-                for (Review review : mReviews) {
-                    Toast.makeText(getApplicationContext(), review.getContent() + "yeah", Toast.LENGTH_SHORT).show();
-                    Log.d("here", review.getContent());
-                }
                 mReviewAdapter = new ReviewAdapter(mReviews, MovieDetailsActivity.this);
                 mReviewRecycler.setAdapter(mReviewAdapter);
                 mReviewSwipe.setRefreshing(false);
@@ -186,7 +182,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
                 //stop loading refresh loader
                 Toast.makeText(MovieDetailsActivity.this, "Error fetching reviews, please try again",
                         Toast.LENGTH_SHORT).show();
-                Log.e("error", t.getLocalizedMessage());
                 mReviewSwipe.setRefreshing(false);
             }
         });
@@ -216,10 +211,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailerAd
 
     void favoriteMovie() {
         if (mMovie.isFavorite()) {
-            Toast.makeText(MovieDetailsActivity.this, "Movie is already on favorite list",
-                    Toast.LENGTH_SHORT).show();
+            mFavorite.setImageResource(R.drawable.ic_favorite_white);
+            mMovieDb.deleteMovie(mMovie.getId());
+            mMovie.setFavorite(false);
         } else {
+            mFavorite.setImageResource(R.drawable.ic_favorite_black);
             mMovieDb.saveMovie(mMovie);
+            mMovie.setFavorite(true);
         }
     }
 

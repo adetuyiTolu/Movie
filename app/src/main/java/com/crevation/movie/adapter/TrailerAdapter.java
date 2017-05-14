@@ -54,7 +54,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Trailer trailer = trailerList.get(position);
-        holder.trailerName.setText("Trailer " + position + 1);
+        holder.trailerName.setText("Trailer " + (position + 1));
     }
 
     @Override
