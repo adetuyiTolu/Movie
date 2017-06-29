@@ -1,2 +1,2 @@
 # Movie
-Android NanoDegree Fast Track Movie Project 1
+Android NanoDegree Fast Track Movie Project 1 and Project 2
